@@ -48,7 +48,7 @@ export type StateData<Resource extends {}, IdProp extends string> = Resource ext
   ? IndexedResource<Resource, IdProp>
   : Resource
 
-interface State<Resource, IdProp extends string> {
+export interface State<Resource, IdProp extends string> {
   // If we have a resource keyed by id, our data is a mapping from id to resource.
   // If not, our data is the entire resource.
   data: StateData<Resource, IdProp>
