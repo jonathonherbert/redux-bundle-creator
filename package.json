@@ -78,7 +78,12 @@
     "collectCoverageFrom": [
       "src/**/*.{ts}"
     ],
-    "coverageReporters": ["json", "lcovonly", "text", "clover"],
+    "coverageReporters": [
+      "json",
+      "lcovonly",
+      "text",
+      "clover"
+    ],
     "transformIgnorePatterns": [
       "<rootDir>/node_modules/(?!lodash-es)"
     ]
