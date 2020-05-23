@@ -1,0 +1,13 @@
+{
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeExternals": true,
+  "hideGenerator": true,
+  "out": "docs",
+  "theme": "markdown",
+  "readme": "README.md",
+  "target": "es6",
+  "exclude": "**/*.spec.ts",
+  "mode": "library",
+  "categorizeByGroup": false
+}
