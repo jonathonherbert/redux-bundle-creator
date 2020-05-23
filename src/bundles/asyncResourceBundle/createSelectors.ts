@@ -1,14 +1,10 @@
-import { State, RootState } from ".";
+import { State, RootStateWithBundle } from ".";
 import { defaultArray } from "./utils";
 
 /**
  * Create selectors for an AsyncResourceBundle.
  */
-const createSelectors = <
-  Resource extends {},
-  IdProp extends string,
-  LocalRootState extends RootState<Resource, IdProp>
->(
+const createSelectors = <Resource extends {}, IdProp extends string, LocalRootState>(
   selectLocalState: (state: LocalRootState) => State<Resource, IdProp>
 ) => {
   const selectPagination = (state: LocalRootState) => selectLocalState(state).pagination;

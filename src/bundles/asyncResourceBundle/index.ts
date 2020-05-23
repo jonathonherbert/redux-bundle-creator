@@ -63,8 +63,8 @@ export interface State<Resource, IdProp extends string> {
   lastFetchOrder?: string[];
 }
 
-export type RootState<Resource, IdProp extends string> = {
-  [mountPoint: string]: State<Resource, IdProp>;
+export type RootStateWithBundle<Resource, EntityName extends string, IdProp extends string> = {
+  [entity in EntityName]: State<Resource, IdProp>;
 };
 
 /**
@@ -80,18 +80,24 @@ export type RootState<Resource, IdProp extends string> = {
 const createAsyncResourceBundle = <
   Resource,
   Action,
+  EntityName extends string,
+  IdProp extends string = "id",
+  RootState extends RootStateWithBundle<Resource, EntityName, IdProp> = RootStateWithBundle<
+    Resource,
+    EntityName,
+    IdProp
+  >
   // Sadly, this must be specified – Typescript cannot selectively infer type
   // parameters when multiple params are present, it can either infer all or none.
   // See https://github.com/microsoft/TypeScript/issues/26242. When this issue is solved,
   // we can derive a default for the mount point from `entityName`.
-  IdProp extends string = "id"
 >(
   // The name of the entity for which this reducer is responsible
-  entityName: string,
+  entityName: EntityName,
   options: {
     // The key the reducer provided by this bundle is mounted at.
     // Defaults to entityName if none is given.
-    selectLocalState?: (state: RootState<Resource, IdProp>) => State<Resource, IdProp>;
+    selectLocalState?: (state: RootState) => State<Resource, IdProp>;
     // Do we index the incoming data by id, or just add it to the state as-is?
     indexById?: boolean;
     // Provides a namespace for the created actions, separated by a slash,
@@ -99,18 +105,14 @@ const createAsyncResourceBundle = <
     namespace?: string;
     // The initial state of the reducer data. Defaults to an empty object.
     initialData?: StateData<Resource, IdProp>;
-    // The mount point of the reducer. Defaults to the entity name.
-    mountPoint?: string;
-  } = {
-    indexById: false
-  }
+  } = {}
 ) => {
   type LocalState = State<Resource, IdProp>;
 
-  const { indexById, mountPoint } = options;
-  const selectLocalState = options.selectLocalState
-    ? options.selectLocalState
-    : (state: RootState<Resource, IdProp>): LocalState => state[mountPoint || entityName];
+  const {
+    indexById = false,
+    selectLocalState = (state: RootState): State<Resource, IdProp> => state[entityName]
+  } = options;
 
   const initialState: LocalState = {
     data: options.initialData || ({} as StateData<Resource, IdProp>),
@@ -245,7 +247,7 @@ const createAsyncResourceBundle = <
       updateError: UPDATE_ERROR
     },
     actions: createActions(entityName),
-    selectors: createSelectors<Resource, IdProp, RootState<Resource, IdProp>>(selectLocalState)
+    selectors: createSelectors<Resource, IdProp, RootState>(selectLocalState)
   };
 };
 
