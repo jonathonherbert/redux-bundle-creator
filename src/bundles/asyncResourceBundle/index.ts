@@ -124,8 +124,8 @@ const createAsyncResourceBundle = <
     updatingIds: []
   };
 
-  const isAction = (action: Actions<Resource> | Action): action is Actions<Resource> => {
-    return (action as Actions<Resource>).entity !== undefined;
+  const isAction = (action: unknown): action is Actions<Resource> => {
+    return (action as Actions<Resource>).entity === entityName;
   };
 
   return {

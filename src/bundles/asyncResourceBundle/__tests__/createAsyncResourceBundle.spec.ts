@@ -85,6 +85,15 @@ describe("createAsyncResourceBundle", () => {
   });
 
   describe("selectors", () => {
+    describe("Type safety", () => {
+      it("should accept a State type parameter that has the correct state type at the mount point, and issue a type error when the root state is not correct", () => {
+        const { selectors } = createAsyncResourceBundle<Book, Actions, "books">("books");
+
+        // @ts-expect-error
+        const willThrow = () => selectors.selectById({ notBooks: { nonsense: "things" } }, "id");
+        expect(willThrow).toThrow();
+      });
+    });
     it("should provide a selector to get the loading state", () => {
       expect(selectors.selectIsLoading({ books: initialState })).toBe(false);
       expect(
@@ -180,12 +189,17 @@ describe("createAsyncResourceBundle", () => {
 
   describe("Reducer", () => {
     describe("Type safety", () => {
-      it("should accept a State type parameter that has the correct state type at the mount point, and issue a type error when the root state is not correct", () => {
-        const { selectors } = createAsyncResourceBundle<Book, Actions, "books">("books");
-        // So this asserts that Typescript would not allow the following line.
+      it("should accept only bundle actions, or the actions that are passed as a union to the bundle", () => {
+        type ExampleActions =
+          | { type: "ACTION_1" }
+          | { type: "ACTION_2"; payload: { example: "payload" } };
+        const { reducer, actions } = createAsyncResourceBundle<Book, ExampleActions, "books">(
+          "books"
+        );
+        reducer(undefined, { type: "ACTION_1" });
+        reducer(undefined, actions.fetchStart("exampleId"));
         // @ts-expect-error
-        const willThrow = () => selectors.selectById({ notBooks: { nonsense: "things" } }, "id");
-        expect(willThrow).toThrow();
+        reducer(undefined, { type: "WHAT_IS_THIS_NONSENSE" });
       });
     });
     describe("Fetch action handlers", () => {
