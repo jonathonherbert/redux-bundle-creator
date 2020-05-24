@@ -67,7 +67,7 @@ export function getOrderFromIncomingResourceData<Resource extends BaseResource>(
   const order =
     newOrder ||
     (newData instanceof Array
-      ? (newData as Resource[]).map((model, index) => {
+      ? newData.map((model, index) => {
           if (!model.id) {
             throw new Error(
               `[asyncResourceBundle]: Cannot apply new data - incoming resource ${resourceName} is missing ID at index ${index}.`
