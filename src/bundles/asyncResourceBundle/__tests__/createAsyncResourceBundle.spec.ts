@@ -175,6 +175,18 @@ describe("createAsyncResourceBundle", () => {
       expect(bundle.selectors.selectIsLoadingInitialDataById(state, "1")).toBe(false);
       expect(bundle.selectors.selectIsLoadingInitialDataById(state, "2")).toBe(true);
     });
+    it("should provide a selector to select whether a resource is loading or updating", () => {
+      const bundle = createAsyncResourceBundle<Book, Actions, "books">("books", {
+        indexById: true
+      });
+      const state = createState({
+        data: { "1": { id: "1" } },
+        loadingIds: ["1"],
+        updatingIds: ["2"]
+      });
+      expect(bundle.selectors.selectIsLoadingById(state, "1")).toBe(true);
+      expect(bundle.selectors.selectIsLoadingById(state, "2")).toBe(true);
+    });
     it("should provide a selector to select the current resource order", () => {
       const bundle = createAsyncResourceBundle<Book, Actions, "books">("books", {
         indexById: true

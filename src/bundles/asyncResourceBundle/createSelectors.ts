@@ -18,7 +18,8 @@ const createSelectors = <Resource extends {}, IdProp extends string, LocalRootSt
   const selectIsLoading = (state: LocalRootState) => !!selectLocalState(state).loadingIds.length;
 
   const selectIsLoadingById = (state: LocalRootState, id: string) =>
-    selectLocalState(state).loadingIds.indexOf(id) !== -1;
+    selectLocalState(state).loadingIds.indexOf(id) !== -1 ||
+    selectLocalState(state).updatingIds.indexOf(id) !== -1;
 
   // It should be possible to remove the `any` here with conditional types.
   // This is a no-op for non-indexed resources.
