@@ -213,6 +213,14 @@ describe("createAsyncResourceBundle", () => {
         // @ts-expect-error
         reducer(undefined, { type: "WHAT_IS_THIS_NONSENSE" });
       });
+      it("should not accept subsets of the reducer state", () => {
+        const { data: _, ...subsetOfState } = initialState;
+        // @ts-expect-error
+        reducer(subsetOfState, actions.fetchStart());
+      });
+      it("should accept supersets of the reducer state", () => {
+        reducer({ ...initialState, extra: "things" }, actions.fetchStart());
+      });
     });
     describe("Fetch action handlers", () => {
       describe("Start action handler", () => {

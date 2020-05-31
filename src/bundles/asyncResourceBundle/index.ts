@@ -130,7 +130,10 @@ const createAsyncResourceBundle = <
 
   return {
     initialState,
-    reducer: (state: LocalState = initialState, action: Actions<Resource> | Action): LocalState => {
+    reducer: <TState extends LocalState>(
+      state = initialState as TState,
+      action: Actions<Resource> | Action
+    ): TState => {
       if (!isAction(action)) {
         return state;
       }
